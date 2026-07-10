@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Auto Screener Bot</title>
+    <style>
+        body { background-color: #f4f7f6; color: #2b2d42; font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 850px; margin: auto; background: #ffffff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        h1, h2 { color: #354f52; border-bottom: 2px solid #e2ece9; padding-bottom: 6px; }
+        .news-radar { background: #fbf8cc; border-left: 5px solid #f7b05b; padding: 15px; border-radius: 6px; margin: 15px 0; }
+        .wallet-grid { display: flex; gap: 15px; margin: 15px 0; }
+        .wallet-card { flex: 1; background: #edf6f9; padding: 15px; border-radius: 8px; text-align: center; }
+        .wallet-val { font-size: 24px; font-weight: bold; margin-top: 5px; color: #2f3e46; }
+        .assets-grid { display: flex; gap: 10px; }
+        .asset-card { flex: 1; background: #eaf4f4; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; }
+        .console-box { background: #1e1e1e; color: #a4c2a0; font-family: monospace; padding: 15px; border-radius: 8px; margin-top: 15px; min-height: 110px; font-size: 13px; }
+        .color-gain { color: #2a9d8f; font-weight: bold; }
+        .color-loss { color: #e76f51; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="margin-top:0;">My Screener Auto-Bot 🤖</h1>
+        <p style="font-size: 12px; color: #777;" id="status-clock">Initializing scanner pipelines...</p>
+
+        <!-- LIVE NEWS FEED -->
+        <div class="news-radar">
+            <h3 style="margin: 0 0 5px 0; color: #d66800; font-size: 14px;">📡 LIVE MARKET RADAR ALERT:</h3>
+            <strong id="radar-title" style="font-size: 15px;">Scanning wires...</strong>
+            <p id="radar-body" style="margin: 5px 0 0 0; font-size: 14px; color: #444;"></p>
+        </div>
+
+        <!-- PORTFOLIO CAPITAL SUMMARY -->
+        <h2>Portfolio Balance & Cash Flow</h2>
+        <div class="wallet-grid">
+            <div class="wallet-card">
+                <div style="font-size: 13px; color: #6c757d;">Initial Cash</div>
+                <div class="wallet-val">$1000.00</div>
+            </div>
+            <div class="wallet-card">
+                <div style="font-size: 13px; color: #6c757d;">Available Cash Balance</div>
+                <div class="wallet-val" id="ui-current-cash">$1000.00</div>
+            </div>
+            <div class="wallet-card">
+                <div style="font-size: 13px; color: #6c757d;">Total Return Net PnL</div>
+                <div class="wallet-val" id="ui-net-pnl">$0.00</div>
+            </div>
+        </div>
+
+        <h2>Monitored Assets</h2>
+        <div class="assets-grid" id="ui-assets-grid"></div>
+
+        <h2>Background Bot Safety Action Logs</h2>
+        <div class="console-box" id="ui-console-logs"></div>
+    </div>
+
+    <script>
+        async function runAutoScreenerLoop() {
+            try {
+                const response = await fetch('/api/cycle');
+                const data = await response.json();
+
+                // 1. Sync clock system status
+                document.getElementById('status-clock').innerText = `System Engine: Active | Local Live Sync: ${new Date().toLocaleTimeString()}`;
+
+                // 2. Hydrate news radar panels
+                document.getElementById('radar-title').innerText = `[${data.activeNews.type}] Focus Target: ${data.activeNews.stock}`;
+                document.getElementById('radar-body').innerText = data.activeNews.headline;
+
+                // 3. Hydrate currency numbers
+                document.getElementById('ui-current-cash').innerText = `$${data.account.current_cash.toFixed(2)}`;
+                
+                const pnlBox = document.getElementById('ui-net-pnl');
+                pnlBox.innerText = `${data.account.total_profit_loss >= 0 ? '+' : ''}$${data.account.total_profit_loss.toFixed(2)}`;
+                pnlBox.className = `wallet-val ${data.account.total_profit_loss >= 0 ? 'color-gain' : 'color-loss'}`;
+
+                // 4. Update core tracker cards
+                document.getElementById('ui-assets-grid').innerHTML = data.prices.map(item => `
+                    <div class="asset-card">
+                        <div style="font-size: 13px; color: #555;">${item.symbol}</div>
+                        <div style="font-size: 18px; margin-top: 4px; color: #222;">$${item.price}</div>
+                    </div>
+                `).join('');
+
+                // 5. Output active process logs
+                document.getElementById('ui-console-logs').innerHTML = data.logs.map(logItem => `<div>${logItem}</div>`).join('');
+
+            } catch (err) {
+                console.error("Live streaming loop sync fail:", err);
+            }
+        }
+
+        runAutoScreenerLoop();
+        setInterval(runAutoScreenerLoop, 5000); // Evaluates news automatically every 5 seconds
+    </script>
+</body>
+</html>

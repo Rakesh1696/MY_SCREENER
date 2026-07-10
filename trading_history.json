@@ -1,0 +1,14 @@
+{
+    "account": {
+        "starting_cash": 1000,
+        "current_cash": 1376.14,
+        "total_profit_loss": 376.14
+    },
+    "recent_trades": [
+        "[4:36:37 PM] [TECH INNOVATION] Bot acted on AAPL -> 🎯 TAKE-PROFIT ENFORCED: Realized momentum upside. [+$35.91]",
+        "[4:36:32 PM] [TECH INNOVATION] Bot acted on AAPL -> 🎯 TAKE-PROFIT ENFORCED: Realized momentum upside. [+$32.93]",
+        "[4:36:27 PM] [CONSUMER DATA] Bot acted on RETAIL_CO -> 🎯 TAKE-PROFIT ENFORCED: Realized momentum upside. [+$19.38]",
+        "[4:36:22 PM] [CONSUMER DATA] Bot acted on RETAIL_CO -> 🎯 TAKE-PROFIT ENFORCED: Realized momentum upside. [+$30.56]",
+        "[4:36:17 PM] [TECH INNOVATION] Bot acted on AAPL -> 🎯 TAKE-PROFIT ENFORCED: Realized momentum upside. [+$24.13]"
+    ]
+}
